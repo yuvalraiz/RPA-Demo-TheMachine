@@ -91,8 +91,8 @@ flow:
             - key: tz
         publish: []
         navigate:
-          - HAS_MORE: get_amount_of_items
-          - NO_MORE: get_amount_of_items
+          - HAS_MORE: sleep
+          - NO_MORE: sleep
           - FAILURE: on_failure
     - get_time:
         do:
@@ -102,6 +102,13 @@ flow:
           - tz: '${output}'
         navigate:
           - SUCCESS: update_inventory
+          - FAILURE: on_failure
+    - sleep:
+        do:
+          io.cloudslang.base.utils.sleep:
+            - seconds: '2'
+        navigate:
+          - SUCCESS: get_amount_of_items
           - FAILURE: on_failure
   results:
     - FAILURE
@@ -116,8 +123,8 @@ extensions:
         x: 506
         'y': 190
       update_income:
-        x: 298
-        'y': 408
+        x: 543
+        'y': 450
       get_amount_of_items:
         x: 200
         'y': 91
@@ -131,6 +138,9 @@ extensions:
           0b1c0a25-f1e0-49c6-1a23-9926e22b6e56:
             targetId: 430127d5-b68a-529a-8fc7-a4611f39fbe8
             port: 'FALSE'
+      sleep:
+        x: 321
+        'y': 282
     results:
       SUCCESS:
         430127d5-b68a-529a-8fc7-a4611f39fbe8:
