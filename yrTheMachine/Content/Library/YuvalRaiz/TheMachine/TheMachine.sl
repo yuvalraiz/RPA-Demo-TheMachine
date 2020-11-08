@@ -48,6 +48,12 @@ flow:
             - FAILURE
         navigate:
           - FAILURE: on_failure
+          - SUCCESS: transfer_to_shop
+    - transfer_to_shop:
+        do:
+          YuvalRaiz.TheMachine.internal.transfer_to_shop: []
+        navigate:
+          - FAILURE: on_failure
           - SUCCESS: SUCCESS
   results:
     - FAILURE
@@ -56,6 +62,13 @@ flow:
 extensions:
   graph:
     steps:
+      is_machine_powerOn:
+        x: 37
+        'y': 93
+        navigate:
+          e62b9c53-56c9-6b4f-bb51-882b51036f67:
+            targetId: 16f16afc-670a-fc43-8bc8-34a2753cf870
+            port: PowerOff
       get_time:
         x: 166
         'y': 95
@@ -65,22 +78,18 @@ extensions:
       work_in_station:
         x: 437
         'y': 95
+      transfer_to_shop:
+        x: 630
+        'y': 105
         navigate:
-          bcc65422-ffef-b13a-8ea6-9fbcd2a59dad:
+          0fffb89c-94c4-0e3a-4d9a-76ad403b019f:
             targetId: 1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12
             port: SUCCESS
-      is_machine_powerOn:
-        x: 37
-        'y': 93
-        navigate:
-          e62b9c53-56c9-6b4f-bb51-882b51036f67:
-            targetId: 16f16afc-670a-fc43-8bc8-34a2753cf870
-            port: PowerOff
     results:
       SUCCESS:
         1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12:
-          x: 632
-          'y': 106
+          x: 844
+          'y': 80
       Machine_PowerOff:
         16f16afc-670a-fc43-8bc8-34a2753cf870:
           x: 194
