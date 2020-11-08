@@ -2,6 +2,13 @@ namespace: YuvalRaiz.TheMachine
 flow:
   name: TheMachine
   workflow:
+    - is_machine_powerOn:
+        do:
+          YuvalRaiz.TheMachine.internal.is_machine_powerOn: []
+        navigate:
+          - FAILURE: on_failure
+          - PowerOn: get_time
+          - PowerOff: Machine_PowerOff
     - get_time:
         do:
           io.cloudslang.base.datetime.get_time:
@@ -45,24 +52,36 @@ flow:
   results:
     - FAILURE
     - SUCCESS
+    - Machine_PowerOff
 extensions:
   graph:
     steps:
       get_time:
-        x: 109
-        'y': 102
+        x: 166
+        'y': 95
+      get_all_stations:
+        x: 292
+        'y': 90
       work_in_station:
-        x: 449
-        'y': 113
+        x: 437
+        'y': 95
         navigate:
           bcc65422-ffef-b13a-8ea6-9fbcd2a59dad:
             targetId: 1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12
             port: SUCCESS
-      get_all_stations:
-        x: 270
-        'y': 108
+      is_machine_powerOn:
+        x: 37
+        'y': 93
+        navigate:
+          e62b9c53-56c9-6b4f-bb51-882b51036f67:
+            targetId: 16f16afc-670a-fc43-8bc8-34a2753cf870
+            port: PowerOff
     results:
       SUCCESS:
         1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12:
           x: 632
           'y': 106
+      Machine_PowerOff:
+        16f16afc-670a-fc43-8bc8-34a2753cf870:
+          x: 194
+          'y': 289
