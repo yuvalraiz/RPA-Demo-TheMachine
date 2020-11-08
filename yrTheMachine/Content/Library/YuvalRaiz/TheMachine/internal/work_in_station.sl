@@ -17,7 +17,7 @@ flow:
                 sensitive: true
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
-            - command: "${'''select tz,active, efficient, req_input_per_one,max_produce,max_drop_percentege, parts, station_hostname\n    from public.machine_control mc,\n    public.machine_setup as ms,\n\t(select sum(quantity) as parts from public.inventory where part_id = '%s') as inv\n    where mc.station_id = '%s' and\n        mc.station_id = ms.station_id\n    order by tz desc limit 1;''' % (str(int(station_id)-1),station_id)}"
+            - command: "${'''select tz,active, efficient, req_input_per_one,max_produce,max_drop_percentege, parts, station_name, station_hostname\n    from public.machine_control mc,\n    public.machine_setup as ms,\n\t(select sum(quantity) as parts from public.inventory where part_id = '%s') as inv\n    where mc.station_id = '%s' and\n        mc.station_id = ms.station_id\n    order by tz desc limit 1;''' % (str(int(station_id)-1),station_id)}"
             - trust_all_roots: 'true'
             - key: tz
         publish:
@@ -27,7 +27,8 @@ flow:
           - max_produce: "${return_result.split(',')[4]}"
           - drop_percentege: "${return_result.split(',')[5]}"
           - input_parts: "${return_result.split(',')[6]}"
-          - station_hostname: "${return_result.split(',')[7]}"
+          - station_name: "${return_result.split(',')[7]}"
+          - station_hostname: "${return_result.split(',')[8]}"
         navigate:
           - HAS_MORE: do_the_work
           - NO_MORE: do_the_work
@@ -35,17 +36,17 @@ flow:
     - rpt_offline:
         do:
           YuvalRaiz.TheMachine.internal.report:
+            - station_name: '${station_name}'
             - station_hostname: '${station_hostname}'
             - msg_t: "${'''Assembly Station %s is offline''' % (station_id)}"
-            - station_id: '${station_id}'
             - sev: Critical
-            - msg: "${'Station %s is not working' % (station_id)}"
         navigate:
           - FAILURE: on_failure
           - SUCCESS: SUCCESS
     - rpt_no_inputs:
         do:
           YuvalRaiz.TheMachine.internal.report:
+            - station_name: '${station_name}'
             - station_hostname: '${station_hostname}'
             - msg_t: "${'Station %s does not have enough inputs' % (station_id)}"
             - sev: major
@@ -93,6 +94,7 @@ flow:
     - rpt_station_worked:
         do:
           YuvalRaiz.TheMachine.internal.report:
+            - station_name: '${station_name}'
             - station_hostname: '${station_hostname}'
             - msg_t: "${'Station %s finish doing %s new elements' % (station_id, new_parts)}"
             - sev: normal
@@ -106,8 +108,8 @@ extensions:
   graph:
     steps:
       sql_query:
-        x: 24
-        'y': 74
+        x: 25
+        'y': 75
       rpt_offline:
         x: 183
         'y': 232
@@ -116,7 +118,7 @@ extensions:
             targetId: 8ebfff54-6cb8-1904-aa21-390110432bfc
             port: SUCCESS
       rpt_no_inputs:
-        x: 334
+        x: 336
         'y': 233
         navigate:
           4b639c0f-ef71-0bb0-13d4-1570eb4580f6:

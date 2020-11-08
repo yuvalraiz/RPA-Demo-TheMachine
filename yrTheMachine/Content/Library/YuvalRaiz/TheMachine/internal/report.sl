@@ -2,6 +2,7 @@ namespace: YuvalRaiz.TheMachine.internal
 flow:
   name: report
   inputs:
+    - station_name
     - station_hostname
     - msg_t:
         required: false
@@ -22,7 +23,7 @@ flow:
     - opcmsg:
         do:
           io.cloudslang.base.cmd.run_command:
-            - command: "${'''/opt/OV/bin/opcmsg msg_grp=manufacturer a=manufacturer o=manufacturer msg_t=\"%s\" sev=%s -option CIH=%s''' % (msg_t,sev,station_hostname)}"
+            - command: "${'''/opt/OV/bin/opcmsg msg_grp=manufacturer a=manufacturer o=manufacturer msg_t=\"%s\" sev=%s node=%s -option CIH=%s''' % (msg_t,sev,station_hostname,station_name)}"
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure
