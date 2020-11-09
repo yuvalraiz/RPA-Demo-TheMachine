@@ -33,7 +33,7 @@ flow:
           YuvalRaiz.TheMachine.internal.update_bvd_with_power: []
         navigate:
           - FAILURE: on_failure
-          - SUCCESS: is_true
+          - SUCCESS: report
     - TheMachine:
         do:
           YuvalRaiz.TheMachine.TheMachine: []
@@ -48,6 +48,16 @@ flow:
         navigate:
           - 'TRUE': TheMachine
           - 'FALSE': SUCCESS
+    - report:
+        do:
+          YuvalRaiz.TheMachine.internal.report:
+            - station_name: AssemblyControl
+            - station_hostname: assembly10.demo.mfdemos.com
+            - msg_t: "${'power is %s' % ('off' if power=='off' else 'on')}"
+            - sev: "${'Critical' if power=='off' else 'Normal'}"
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: is_true
   results:
     - FAILURE
     - SUCCESS
@@ -55,14 +65,14 @@ extensions:
   graph:
     steps:
       control_station:
-        x: 291
-        'y': 127
+        x: 22
+        'y': 123
       update_bvd_with_power:
-        x: 442
-        'y': 132
+        x: 193
+        'y': 125
       TheMachine:
-        x: 702
-        'y': 265
+        x: 626
+        'y': 283
         navigate:
           57d3fc78-5586-28f0-7d57-0606a596ff33:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
@@ -71,14 +81,17 @@ extensions:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
             port: Machine_PowerOff
       is_true:
-        x: 585
-        'y': 138
+        x: 486
+        'y': 135
         navigate:
           5fe44032-ca5d-ba11-f553-43f5924ac7f2:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
             port: 'FALSE'
+      report:
+        x: 332
+        'y': 128
     results:
       SUCCESS:
         b2272065-50c3-383c-6bc3-3eba17ddaa9a:
-          x: 948
-          'y': 93
+          x: 789
+          'y': 141
