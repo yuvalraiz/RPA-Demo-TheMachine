@@ -41,7 +41,7 @@ flow:
               - body: |-
                   ${'''{
                       "ciName": "%s",
-                      "ready_parts": "%s"
+                      "ready_parts": %s
                   }''' % (station_data.split(',')[0], station_data.split(',')[1])}
               - content_type: application/json
           break:
@@ -55,6 +55,9 @@ flow:
 extensions:
   graph:
     steps:
+      get_all_parts_ids:
+        x: 169
+        'y': 126
       send_to_bvd:
         x: 317
         'y': 131
@@ -62,9 +65,6 @@ extensions:
           625b85ca-a702-96a6-599f-7092ed78bbdf:
             targetId: e4fec520-ae1b-3d2b-caa7-6bad0cb4bed9
             port: SUCCESS
-      get_all_parts_ids:
-        x: 169
-        'y': 126
     results:
       SUCCESS:
         e4fec520-ae1b-3d2b-caa7-6bad0cb4bed9:

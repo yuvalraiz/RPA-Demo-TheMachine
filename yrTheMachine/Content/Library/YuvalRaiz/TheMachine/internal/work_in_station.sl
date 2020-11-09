@@ -113,10 +113,10 @@ flow:
             - body: |-
                 ${'''{
                     "ciName": "%s",
-                    "new_parts": "%s",
-                    "used_parts": "%s",
-                    "effective_drops": "%s",
-                    "efficiency": "%s"
+                    "new_parts": %s,
+                    "used_parts": %s,
+                    "effective_drops": %s,
+                    "efficiency": %s
                 }''' % (station_name,new_parts,used_parts,effective_drops,efficiency)}
             - content_type: application/json
         navigate:

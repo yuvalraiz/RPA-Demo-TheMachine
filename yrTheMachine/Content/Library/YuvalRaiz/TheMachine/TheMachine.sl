@@ -62,7 +62,7 @@ flow:
           YuvalRaiz.TheMachine.internal.update_bvd_with_warehouse: []
         navigate:
           - FAILURE: on_failure
-          - SUCCESS: SUCCESS
+          - SUCCESS: update_bvd_with_shipments
     - update_bvd_with_power:
         do:
           YuvalRaiz.TheMachine.internal.update_bvd_with_power: []
@@ -75,6 +75,12 @@ flow:
         navigate:
           - FAILURE: on_failure
           - SUCCESS: transfer_to_shop
+    - update_bvd_with_shipments:
+        do:
+          YuvalRaiz.TheMachine.internal.update_bvd_with_shipments: []
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: SUCCESS
   results:
     - FAILURE
     - SUCCESS
@@ -82,44 +88,47 @@ flow:
 extensions:
   graph:
     steps:
-      is_machine_powerOn:
-        x: 48
-        'y': 91
-      get_time:
-        x: 198
-        'y': 98
+      update_bvd_with_power_1:
+        x: 577
+        'y': 102
+      update_bvd_with_shipments:
+        x: 730
+        'y': 469
+        navigate:
+          003294c0-5264-2d06-68ee-a378c3d2bedf:
+            targetId: 1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12
+            port: SUCCESS
       get_all_stations:
         x: 320
         'y': 97
+      transfer_to_shop:
+        x: 728
+        'y': 105
       work_in_station:
         x: 437
         'y': 95
-      transfer_to_shop:
-        x: 588
-        'y': 94
       update_bvd_with_warehouse:
-        x: 589
-        'y': 256
-        navigate:
-          90ccf2db-0817-dccc-9d47-032702213933:
-            targetId: 1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12
-            port: SUCCESS
+        x: 730
+        'y': 278
       update_bvd_with_power:
-        x: 51
-        'y': 241
+        x: 46
+        'y': 253
         navigate:
           4f154c2e-8c8c-3399-8770-9d4373eef7ad:
             targetId: 16f16afc-670a-fc43-8bc8-34a2753cf870
             port: SUCCESS
-      update_bvd_with_power_1:
-        x: 442
-        'y': 232
+      get_time:
+        x: 198
+        'y': 98
+      is_machine_powerOn:
+        x: 48
+        'y': 91
     results:
       SUCCESS:
         1c6d7e82-a9b6-ef9b-dd68-2d6c0613ca12:
-          x: 766
-          'y': 250
+          x: 575
+          'y': 470
       Machine_PowerOff:
         16f16afc-670a-fc43-8bc8-34a2753cf870:
-          x: 153
-          'y': 359
+          x: 42
+          'y': 446

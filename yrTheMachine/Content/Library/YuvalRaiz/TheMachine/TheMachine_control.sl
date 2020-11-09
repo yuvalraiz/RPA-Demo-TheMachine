@@ -10,14 +10,12 @@ flow:
   name: TheMachine_control
   inputs:
     - station_id:
-        default: '1'
         required: false
     - all_stations:
         default: "${get('station_id','')}"
         private: true
         required: false
     - online:
-        default: 'false'
         required: false
     - go_online:
         default: "${get('online','true')}"
@@ -58,7 +56,7 @@ flow:
           break:
             - FAILURE
         navigate:
-          - SUCCESS: SUCCESS
+          - SUCCESS: TheMachine
           - FAILURE: on_failure
     - is_null:
         do:
@@ -87,6 +85,13 @@ flow:
         navigate:
           - SUCCESS: control_station
           - FAILURE: on_failure
+    - TheMachine:
+        do:
+          YuvalRaiz.TheMachine.TheMachine: []
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: SUCCESS
+          - Machine_PowerOff: SUCCESS
   results:
     - FAILURE
     - SUCCESS
@@ -99,18 +104,24 @@ extensions:
       control_station:
         x: 408
         'y': 129
-        navigate:
-          f1616164-ba55-39a7-e902-4c58a7dd5872:
-            targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
-            port: SUCCESS
       is_null:
         x: 176
         'y': 132
       get_all_stations:
         x: 302
         'y': 242
+      TheMachine:
+        x: 567
+        'y': 134
+        navigate:
+          77b54a2c-18e8-fcf6-eb32-f55b69c3f24c:
+            targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
+            port: Machine_PowerOff
+          f6e1ba89-5534-cc68-3894-7d058e4f61f4:
+            targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
+            port: SUCCESS
     results:
       SUCCESS:
         b2272065-50c3-383c-6bc3-3eba17ddaa9a:
-          x: 604
-          'y': 125
+          x: 792
+          'y': 136

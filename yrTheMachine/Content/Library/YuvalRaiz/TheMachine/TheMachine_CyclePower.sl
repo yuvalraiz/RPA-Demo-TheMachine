@@ -9,6 +9,7 @@ flow:
   inputs:
     - power:
         private: false
+    - run: 'true'
   workflow:
     - control_station:
         do:
@@ -32,7 +33,21 @@ flow:
           YuvalRaiz.TheMachine.internal.update_bvd_with_power: []
         navigate:
           - FAILURE: on_failure
+          - SUCCESS: is_true
+    - TheMachine:
+        do:
+          YuvalRaiz.TheMachine.TheMachine: []
+        navigate:
+          - FAILURE: on_failure
           - SUCCESS: SUCCESS
+          - Machine_PowerOff: SUCCESS
+    - is_true:
+        do:
+          io.cloudslang.base.utils.is_true:
+            - bool_value: '${str(power!="off")}'
+        navigate:
+          - 'TRUE': TheMachine
+          - 'FALSE': SUCCESS
   results:
     - FAILURE
     - SUCCESS
@@ -45,12 +60,25 @@ extensions:
       update_bvd_with_power:
         x: 442
         'y': 132
+      TheMachine:
+        x: 702
+        'y': 265
         navigate:
-          cc5146db-c242-5513-e0a2-02ac2d608e48:
+          57d3fc78-5586-28f0-7d57-0606a596ff33:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
             port: SUCCESS
+          6d22ee2a-1f5d-8efa-eb36-5d170d7240fc:
+            targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
+            port: Machine_PowerOff
+      is_true:
+        x: 585
+        'y': 138
+        navigate:
+          5fe44032-ca5d-ba11-f553-43f5924ac7f2:
+            targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
+            port: 'FALSE'
     results:
       SUCCESS:
         b2272065-50c3-383c-6bc3-3eba17ddaa9a:
-          x: 611
-          'y': 129
+          x: 948
+          'y': 93
