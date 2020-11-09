@@ -25,8 +25,14 @@ flow:
             - command: "${'''update public.machine_general set power = %s;''' % ('false' if power == \"off\" else 'true')}"
             - trust_all_roots: 'true'
         navigate:
-          - SUCCESS: SUCCESS
+          - SUCCESS: update_bvd_with_power
           - FAILURE: on_failure
+    - update_bvd_with_power:
+        do:
+          YuvalRaiz.TheMachine.internal.update_bvd_with_power: []
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: SUCCESS
   results:
     - FAILURE
     - SUCCESS
@@ -36,12 +42,15 @@ extensions:
       control_station:
         x: 291
         'y': 127
+      update_bvd_with_power:
+        x: 442
+        'y': 132
         navigate:
-          f1616164-ba55-39a7-e902-4c58a7dd5872:
+          cc5146db-c242-5513-e0a2-02ac2d608e48:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
             port: SUCCESS
     results:
       SUCCESS:
         b2272065-50c3-383c-6bc3-3eba17ddaa9a:
-          x: 604
-          'y': 125
+          x: 611
+          'y': 129

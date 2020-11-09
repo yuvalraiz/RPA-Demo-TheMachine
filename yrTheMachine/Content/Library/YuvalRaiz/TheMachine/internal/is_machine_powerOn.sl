@@ -17,7 +17,7 @@ flow:
             - trust_all_roots: 'true'
             - key: tz
         publish:
-          - power: "${return_result.split(',')[0]}"
+          - power: "${'on' if return_result.split(',')[0]=='t' else 'off'}"
         navigate:
           - HAS_MORE: is_true
           - NO_MORE: is_true
@@ -25,10 +25,12 @@ flow:
     - is_true:
         do:
           io.cloudslang.base.utils.is_true:
-            - bool_value: "${str(power=='t')}"
+            - bool_value: "${str(power=='on')}"
         navigate:
           - 'TRUE': PowerOn
           - 'FALSE': PowerOff
+  outputs:
+    - power: '${power}'
   results:
     - FAILURE
     - PowerOn

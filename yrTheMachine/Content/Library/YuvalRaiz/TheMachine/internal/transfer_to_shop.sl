@@ -73,27 +73,6 @@ flow:
         navigate:
           - 'TRUE': get_time
           - 'FALSE': SUCCESS
-    - update_income:
-        do:
-          io.cloudslang.base.database.sql_query:
-            - db_server_name: "${get_sp('YuvalRaiz.TheMachine.db_hostname')}"
-            - db_type: PostgreSQL
-            - username: "${get_sp('YuvalRaiz.TheMachine.db_username')}"
-            - password:
-                value: "${get_sp('YuvalRaiz.TheMachine.db_password')}"
-                sensitive: true
-            - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
-            - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
-            - command: |-
-                ${'''insert into public.income (tz,income) values
-                ('%s',%s);''' % (tz,int(min_shippment)*float(current_price))}
-            - trust_all_roots: 'true'
-            - key: tz
-        publish: []
-        navigate:
-          - HAS_MORE: sleep
-          - NO_MORE: sleep
-          - FAILURE: on_failure
     - get_time:
         do:
           io.cloudslang.base.datetime.get_time:
@@ -110,6 +89,25 @@ flow:
         navigate:
           - SUCCESS: get_amount_of_items
           - FAILURE: on_failure
+    - update_income:
+        do:
+          io.cloudslang.base.database.sql_command:
+            - db_server_name: "${get_sp('YuvalRaiz.TheMachine.db_hostname')}"
+            - db_type: PostgreSQL
+            - username: "${get_sp('YuvalRaiz.TheMachine.db_username')}"
+            - password:
+                value: "${get_sp('YuvalRaiz.TheMachine.db_password')}"
+                sensitive: true
+            - db_port: '5432'
+            - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
+            - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
+            - command: |-
+                ${'''insert into public.income (tz,income) values
+                ('%s',%s);''' % (tz,int(min_shippment)*float(current_price))}
+            - trust_all_roots: 'true'
+        navigate:
+          - SUCCESS: sleep
+          - FAILURE: on_failure
   results:
     - FAILURE
     - SUCCESS
@@ -119,18 +117,12 @@ extensions:
       get_shippment_params:
         x: 51
         'y': 86
-      get_time:
-        x: 506
-        'y': 190
-      update_income:
-        x: 543
-        'y': 450
-      get_amount_of_items:
-        x: 200
-        'y': 91
       update_inventory:
         x: 651
         'y': 185
+      get_amount_of_items:
+        x: 200
+        'y': 91
       ready_to_ship:
         x: 386
         'y': 107
@@ -141,6 +133,12 @@ extensions:
       sleep:
         x: 321
         'y': 282
+      get_time:
+        x: 506
+        'y': 190
+      update_income:
+        x: 514
+        'y': 401
     results:
       SUCCESS:
         430127d5-b68a-529a-8fc7-a4611f39fbe8:

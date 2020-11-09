@@ -16,6 +16,7 @@ operation:
           used_parts=0
           new_parts=0
           max_based_on_inputs=0
+          efficiency=0
           if is_active!='t':
               return
           if req_input_per_one=='0':
@@ -31,12 +32,14 @@ operation:
           else:
               effective_drops=random.randrange(0,int(drop_percentege))
           new_parts=int(max_based_on_inputs*(100-effective_drops)/100)
+          efficiency=int(new_parts/int(max_produce)*100)
           return locals()
   outputs:
     - new_parts
     - used_parts
     - effective_drops
     - max_based_on_inputs
+    - efficiency
   results:
     - STATION_OFFLINE: "${is_active!='t'}"
       CUSTOM_0: "${is_active!='t'}"

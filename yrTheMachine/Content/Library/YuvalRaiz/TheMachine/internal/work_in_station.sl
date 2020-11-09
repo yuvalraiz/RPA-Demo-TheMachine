@@ -5,6 +5,8 @@ flow:
     - station_id
     - tz:
         required: true
+    - bvd_url: "${get_sp('YuvalRaiz.TheMachine.bvd_url')}"
+    - api_key: "${get_sp('YuvalRaiz.TheMachine.api_key')}"
   workflow:
     - sql_query:
         do:
@@ -66,6 +68,7 @@ flow:
           - new_parts
           - used_parts
           - effective_drops
+          - efficiency
         navigate:
           - STATION_OFFLINE: rpt_offline
           - NOT_ENOUGH_INPUTS: rpt_no_inputs
@@ -96,11 +99,29 @@ flow:
           YuvalRaiz.TheMachine.internal.report:
             - station_name: '${station_name}'
             - station_hostname: '${station_hostname}'
-            - msg_t: "${'Station %s finish doing %s new elements' % (station_id, new_parts)}"
+            - msg_t: "${'''Station %s finish doing %s new elements (%s%%)''' % (station_id, new_parts,efficiency)}"
             - sev: normal
         navigate:
           - FAILURE: on_failure
+          - SUCCESS: send_to_bvd
+    - send_to_bvd:
+        do:
+          io.cloudslang.base.http.http_client_post:
+            - url: "${'''%s/bvd-receiver/api/submit/%s/dims/ciName/tags/assembly_cycle''' % (bvd_url,api_key)}"
+            - trust_all_roots: 'true'
+            - request_character_set: utf-8
+            - body: |-
+                ${'''{
+                    "ciName": "%s",
+                    "new_parts": "%s",
+                    "used_parts": "%s",
+                    "effective_drops": "%s",
+                    "efficiency": "%s"
+                }''' % (station_name,new_parts,used_parts,effective_drops,efficiency)}
+            - content_type: application/json
+        navigate:
           - SUCCESS: SUCCESS
+          - FAILURE: on_failure
   results:
     - FAILURE
     - SUCCESS
@@ -108,8 +129,8 @@ extensions:
   graph:
     steps:
       sql_query:
-        x: 25
-        'y': 75
+        x: 26
+        'y': 70
       rpt_offline:
         x: 183
         'y': 232
@@ -125,16 +146,19 @@ extensions:
             targetId: 8ebfff54-6cb8-1904-aa21-390110432bfc
             port: SUCCESS
       do_the_work:
-        x: 257
+        x: 259
         'y': 65
       update_inventory:
-        x: 448
-        'y': 88
+        x: 412
+        'y': 66
       rpt_station_worked:
-        x: 657
-        'y': 93
+        x: 582
+        'y': 67
+      send_to_bvd:
+        x: 742
+        'y': 75
         navigate:
-          26deefb4-27de-ce5a-cbe8-8c0911f773c9:
+          e06de728-eb09-005d-a3ab-29a6f7b68659:
             targetId: 430127d5-b68a-529a-8fc7-a4611f39fbe8
             port: SUCCESS
     results:
@@ -143,5 +167,5 @@ extensions:
           x: 267
           'y': 381
         430127d5-b68a-529a-8fc7-a4611f39fbe8:
-          x: 805
-          'y': 77
+          x: 985
+          'y': 90
