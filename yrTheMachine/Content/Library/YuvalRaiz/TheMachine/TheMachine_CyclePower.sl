@@ -55,6 +55,7 @@ flow:
             - station_hostname: assembly10.demo.mfdemos.com
             - msg_t: "${'power is %s' % ('off' if power=='off' else 'on')}"
             - sev: "${'Critical' if power=='off' else 'Normal'}"
+            - ETI: "${'''Productivity_Availability:%s''' % ('Critical' if power=='off' else 'Normal')}"
         navigate:
           - FAILURE: on_failure
           - SUCCESS: is_true

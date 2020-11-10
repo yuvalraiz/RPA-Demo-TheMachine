@@ -8,6 +8,8 @@ flow:
         required: false
     - sev:
         required: false
+    - ETI:
+        required: true
     - counter_name:
         required: false
     - counter_value:

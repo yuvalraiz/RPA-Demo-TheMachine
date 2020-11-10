@@ -42,6 +42,7 @@ flow:
             - station_hostname: '${station_hostname}'
             - msg_t: "${'''Assembly Station %s is offline''' % (station_id)}"
             - sev: Critical
+            - ETI: '${Productivity_Availability:Critical}'
         navigate:
           - FAILURE: on_failure
           - SUCCESS: SUCCESS
@@ -52,6 +53,7 @@ flow:
             - station_hostname: '${station_hostname}'
             - msg_t: "${'Station %s does not have enough inputs' % (station_id)}"
             - sev: major
+            - ETI: 'Productivity_Level:Major:0'
         navigate:
           - FAILURE: on_failure
           - SUCCESS: SUCCESS
@@ -101,6 +103,7 @@ flow:
             - station_hostname: '${station_hostname}'
             - msg_t: "${'''Station %s finish doing %s new elements (%s%%)''' % (station_id, new_parts,efficiency)}"
             - sev: normal
+            - ETI: "${'''Productivity_Level:Normal:%s''' % (efficiency)}"
         navigate:
           - FAILURE: on_failure
           - SUCCESS: send_to_bvd
@@ -139,8 +142,8 @@ extensions:
             targetId: 8ebfff54-6cb8-1904-aa21-390110432bfc
             port: SUCCESS
       rpt_no_inputs:
-        x: 336
-        'y': 233
+        x: 335
+        'y': 232
         navigate:
           4b639c0f-ef71-0bb0-13d4-1570eb4580f6:
             targetId: 8ebfff54-6cb8-1904-aa21-390110432bfc

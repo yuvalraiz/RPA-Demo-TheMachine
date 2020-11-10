@@ -12,10 +12,11 @@ flow:
     - station_id:
         required: false
     - all_stations:
-        default: "${get('station_id','')}"
+        default: "${get('station_id','XXX')}"
         private: true
         required: false
     - online:
+        default: 'false'
         required: false
     - go_online:
         default: "${get('online','true')}"
@@ -33,11 +34,11 @@ flow:
         publish:
           - tz: '${output}'
         navigate:
-          - SUCCESS: is_null
+          - SUCCESS: get_all_stations
           - FAILURE: on_failure
     - control_station:
         loop:
-          for: "station_id in all_stations.split(';')"
+          for: "station_data in all_stations.split(';')"
           do:
             io.cloudslang.base.database.sql_command:
               - db_server_name: "${get_sp('YuvalRaiz.TheMachine.db_hostname')}"
@@ -51,21 +52,13 @@ flow:
               - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
               - command: |-
                   ${'''insert into   public.machine_control (tz,station_id,active,efficient)
-                   values ('%s','%s', '%s', %s); ''' %  (tz,station_id,go_online, go_efficient)}
+                   values ('%s','%s', '%s', %s); ''' %  (tz,station_data.split(',')[0],go_online, go_efficient)}
               - trust_all_roots: 'true'
           break:
             - FAILURE
         navigate:
-          - SUCCESS: TheMachine
+          - SUCCESS: rpt_power_status
           - FAILURE: on_failure
-    - is_null:
-        do:
-          io.cloudslang.base.utils.is_null:
-            - variable: '${station_id}'
-        publish: []
-        navigate:
-          - IS_NULL: get_all_stations
-          - IS_NOT_NULL: control_station
     - get_all_stations:
         do:
           io.cloudslang.base.database.sql_query_all_rows:
@@ -77,7 +70,7 @@ flow:
                 sensitive: true
             - db_port: '5432'
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
-            - command: select station_id from public.machine_setup
+            - command: "${'''select station_id, station_name, station_hostname from public.machine_setup %s''' % ('' if all_stations=='XX' else '''where station_id = '%s' ''' % (all_stations) )}"
             - trust_all_roots: 'true'
             - row_delimiter: ;
         publish:
@@ -92,6 +85,21 @@ flow:
           - FAILURE: on_failure
           - SUCCESS: SUCCESS
           - Machine_PowerOff: SUCCESS
+    - rpt_power_status:
+        loop:
+          for: "station_data in all_stations.split(';')"
+          do:
+            YuvalRaiz.TheMachine.internal.report:
+              - station_name: "${station_data.split(',')[1]}"
+              - station_hostname: "${station_data.split(',')[2]}"
+              - msg_t: "${'''Station power is %s''' % ('on' if go_online == 'true' else 'off')}"
+              - sev: "${'normal' if go_online == 'true' else 'critical'}"
+              - ETI: "${'''Productivity_Availability:%s''' % ('normal' if go_online == 'true' else 'critical')}"
+          break:
+            - FAILURE
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: TheMachine
   results:
     - FAILURE
     - SUCCESS
@@ -102,17 +110,17 @@ extensions:
         x: 41
         'y': 132
       control_station:
-        x: 408
-        'y': 129
-      is_null:
-        x: 176
-        'y': 132
+        x: 320
+        'y': 137
+      rpt_power_status:
+        x: 466
+        'y': 140
       get_all_stations:
-        x: 302
-        'y': 242
+        x: 181
+        'y': 135
       TheMachine:
-        x: 567
-        'y': 134
+        x: 599
+        'y': 142
         navigate:
           77b54a2c-18e8-fcf6-eb32-f55b69c3f24c:
             targetId: b2272065-50c3-383c-6bc3-3eba17ddaa9a
@@ -123,5 +131,5 @@ extensions:
     results:
       SUCCESS:
         b2272065-50c3-383c-6bc3-3eba17ddaa9a:
-          x: 792
-          'y': 136
+          x: 797
+          'y': 150
