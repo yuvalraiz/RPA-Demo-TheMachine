@@ -153,7 +153,7 @@ extensions:
         'y': 65
       update_inventory:
         x: 412
-        'y': 66
+        'y': 65
       rpt_station_worked:
         x: 582
         'y': 67

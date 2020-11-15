@@ -1,6 +1,8 @@
 namespace: YuvalRaiz.TheMachine.internal
 flow:
   name: is_machine_powerOn
+  inputs:
+    - machine_id
   workflow:
     - sql_query:
         do:
