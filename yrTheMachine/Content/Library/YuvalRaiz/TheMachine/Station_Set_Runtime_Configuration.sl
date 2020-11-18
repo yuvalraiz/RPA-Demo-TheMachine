@@ -17,7 +17,7 @@ flow:
         default: 'on'
         required: false
     - efficiency:
-        default: '55'
+        default: '100'
         required: false
     - istant_run:
         required: false
@@ -98,33 +98,33 @@ extensions:
   graph:
     steps:
       get_time:
-        x: 56
-        'y': 90
-      get_current_data:
-        x: 217
-        'y': 90
+        x: 100
+        'y': 250
+      update_station_configuration:
+        x: 700
+        'y': 250
       Machine_Run_A_Cycle:
-        x: 1103
-        'y': 59
+        x: 1300
+        'y': 125
         navigate:
-          7132fbf5-d35b-65a2-1b79-94c809c8d5c8:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
+          94564c1f-a232-663d-7571-6dd7bf079bd4:
+            targetId: 4c6965f3-cdf7-4340-156d-2383d68ae0d7
             port: SUCCESS
-          ac9d3556-0211-2115-fcab-ac0021e5bcba:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
+          99916fdf-9cc5-1c4a-eb35-77aafb93458a:
+            targetId: 4c6965f3-cdf7-4340-156d-2383d68ae0d7
             port: Machine_PowerOff
       should_invoke_cycle:
-        x: 593
-        'y': 90
+        x: 1000
+        'y': 250
         navigate:
-          9a5c3e67-e06c-a58b-e86d-f80ddc53e566:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
+          44aae8dc-7cbd-edb6-24ab-6ba2efc17753:
+            targetId: 4c6965f3-cdf7-4340-156d-2383d68ae0d7
             port: 'FALSE'
-      update_station_configuration:
-        x: 396
-        'y': 83
+      get_current_data:
+        x: 400
+        'y': 250
     results:
       SUCCESS:
-        9c3369bc-b987-ca03-e0c1-91ef075adf8c:
-          x: 1028
-          'y': 438
+        4c6965f3-cdf7-4340-156d-2383d68ae0d7:
+          x: 1300
+          'y': 375

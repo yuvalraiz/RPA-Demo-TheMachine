@@ -29,7 +29,7 @@ flow:
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
             - command: |-
                 ${'''
-                select station_name, station_hostname, max_production_in_cycle, inaccuracy, power, efficiency
+                select station_name, station_hostname, max_production_in_cycle, inaccuracy, power, efficiency,outcome_part_id
                 from station_current_configuration
                 where machine_id = '%s' and station_id = '%s'; ''' % (machine_id, station_id)}
             - trust_all_roots: 'true'
@@ -41,6 +41,7 @@ flow:
           - inaccuracy: "${return_result.split(',')[3]}"
           - power: "${return_result.split(',')[4]}"
           - efficiency: "${return_result.split(',')[5]}"
+          - outcome_part_id: "${return_result.split(',')[6]}"
         navigate:
           - HAS_MORE: get_station_input_status
           - NO_MORE: get_station_input_status
@@ -122,7 +123,7 @@ flow:
     - send_station_Cycle_to_bvd:
         do:
           io.cloudslang.base.http.http_client_post:
-            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/station_cycle/dims/machine_id,station_name''' % (bvd_url,bvd_api_key)}"
+            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/station_cycle/dims/viewName,ciName''' % (bvd_url,bvd_api_key)}"
             - trust_all_roots: 'true'
             - request_character_set: utf-8
             - body: '${bvd_json}'
@@ -148,7 +149,7 @@ flow:
                 from public.station_requirements where machine_id = '%s' and station_id = '%s'
                 union values ('%s','%s', '%s'::TIMESTAMP, %s, '%s')
                 )
-                ;''' % (tz, try_assembly, machine_id, station_id, machine_id,station_id, tz, created_items, station_id)}
+                ;''' % (tz, try_assembly, machine_id, station_id, machine_id,station_id, tz, created_items, outcome_part_id)}
             - trust_all_roots: 'true'
         navigate:
           - SUCCESS: opcmon

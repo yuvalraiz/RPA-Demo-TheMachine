@@ -95,6 +95,13 @@ flow:
             - outcome_price: '${outcome_price}'
         navigate:
           - FAILURE: on_failure
+          - SUCCESS: Machine_update_parts_level
+    - Machine_update_parts_level:
+        do:
+          YuvalRaiz.TheMachine.internal.Machine_update_parts_level:
+            - machine_id: '${machine_id}'
+        navigate:
+          - FAILURE: on_failure
           - SUCCESS: Machine_report_status
   results:
     - FAILURE
@@ -104,39 +111,42 @@ extensions:
   graph:
     steps:
       get_machine_current_data:
-        x: 58
-        'y': 109
+        x: 100
+        'y': 350
       is_machine_power:
-        x: 218
-        'y': 105
+        x: 400
+        'y': 350
       get_all_stations:
-        x: 365
-        'y': 104
+        x: 700
+        'y': 175
       Station_Run_A_Cycle:
-        x: 511
-        'y': 105
+        x: 998
+        'y': 174
       Machine_report_status:
-        x: 611
-        'y': 278
+        x: 700
+        'y': 525
       is_machine_power_1:
-        x: 819
-        'y': 483
+        x: 1000
+        'y': 525
         navigate:
-          da42ae95-6d40-013f-d9dd-dbac8342e5e6:
-            targetId: 04d51ea4-1000-61c9-2988-44ea34cd12de
-            port: 'FALSE'
-          ca98a51a-f8e2-dcac-117a-4cf0f28db403:
-            targetId: 1f878711-094f-f59c-838d-27aaec03730d
+          583c5668-11b6-328f-1041-cc6fbaac8db9:
+            targetId: 159c707c-4141-6694-5128-ab00218d5e3f
             port: 'TRUE'
+          f1ae5233-e74c-8573-79bd-a3d73c271d26:
+            targetId: 0022ebc8-9ac4-02f7-3c63-1689c3f9b5f3
+            port: 'FALSE'
       Machine_Consume_Outcomes:
-        x: 702
-        'y': 111
+        x: 1300
+        'y': 116.66666666666667
+      Machine_update_parts_level:
+        x: 931
+        'y': 390
     results:
       SUCCESS:
-        1f878711-094f-f59c-838d-27aaec03730d:
-          x: 995
-          'y': 426
+        159c707c-4141-6694-5128-ab00218d5e3f:
+          x: 1300
+          'y': 350
       Machine_PowerOff:
-        04d51ea4-1000-61c9-2988-44ea34cd12de:
-          x: 939
-          'y': 570
+        0022ebc8-9ac4-02f7-3c63-1689c3f9b5f3:
+          x: 1300
+          'y': 583.3333333333334

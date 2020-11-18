@@ -47,21 +47,21 @@ flow:
 extensions:
   graph:
     steps:
-      Machine_update_parts_level:
-        x: 365
-        'y': 140
-        navigate:
-          4a5ff163-eb94-8738-0c1c-027a29249cc5:
-            targetId: 43158961-3797-12f6-263b-5d210075db37
-            port: SUCCESS
-      update_inventory:
-        x: 211
-        'y': 138
       get_time:
-        x: 79
-        'y': 136
+        x: 100
+        'y': 150
+      update_inventory:
+        x: 400
+        'y': 150
+      Machine_update_parts_level:
+        x: 700
+        'y': 150
+        navigate:
+          6ec8865f-4247-a2f5-0895-73b6df91bf8a:
+            targetId: 0c7b95cc-6530-e6e6-6085-581d24c77473
+            port: SUCCESS
     results:
       SUCCESS:
-        43158961-3797-12f6-263b-5d210075db37:
-          x: 540
-          'y': 136
+        0c7b95cc-6530-e6e6-6085-581d24c77473:
+          x: 1000
+          'y': 150

@@ -65,31 +65,31 @@ flow:
 extensions:
   graph:
     steps:
-      should_invoke_cycle:
-        x: 377
-        'y': 151
-        navigate:
-          9a5c3e67-e06c-a58b-e86d-f80ddc53e566:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
-            port: 'FALSE'
       get_time:
-        x: 56
-        'y': 141
-      Machine_Run_A_Cycle:
-        x: 561
-        'y': 153
-        navigate:
-          7132fbf5-d35b-65a2-1b79-94c809c8d5c8:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
-            port: SUCCESS
-          ac9d3556-0211-2115-fcab-ac0021e5bcba:
-            targetId: 9c3369bc-b987-ca03-e0c1-91ef075adf8c
-            port: Machine_PowerOff
+        x: 100
+        'y': 250
       update_machine_power:
-        x: 217
-        'y': 142
+        x: 400
+        'y': 250
+      should_invoke_cycle:
+        x: 700
+        'y': 250
+        navigate:
+          97818a4c-4662-aca8-f8b1-7b7e6c270200:
+            targetId: 7e5555a7-6a11-75cc-862a-b132cd18517a
+            port: 'FALSE'
+      Machine_Run_A_Cycle:
+        x: 1000
+        'y': 125
+        navigate:
+          382ecdd2-c316-7da1-37d6-b005251207c2:
+            targetId: 7e5555a7-6a11-75cc-862a-b132cd18517a
+            port: SUCCESS
+          fbf13469-3fb1-a5a5-943b-34999c194683:
+            targetId: 7e5555a7-6a11-75cc-862a-b132cd18517a
+            port: Machine_PowerOff
     results:
       SUCCESS:
-        9c3369bc-b987-ca03-e0c1-91ef075adf8c:
-          x: 570
-          'y': 361
+        7e5555a7-6a11-75cc-862a-b132cd18517a:
+          x: 1000
+          'y': 375

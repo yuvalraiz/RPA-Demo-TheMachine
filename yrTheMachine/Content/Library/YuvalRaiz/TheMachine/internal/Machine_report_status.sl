@@ -44,14 +44,14 @@ flow:
     - send_machine_status_to_bvd:
         do:
           io.cloudslang.base.http.http_client_post:
-            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/machine_state/dims/machine_id''' % (bvd_url,bvd_api_key)}"
+            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/machine_state/dims/viewName''' % (bvd_url,bvd_api_key)}"
             - trust_all_roots: 'true'
             - request_character_set: utf-8
-            - body: "${'''{\"machine_id\": \"%s\", \"power\": \"%s\", \"last_run\": \"%s\"}''' %(machine_id,power,tz)}"
+            - body: "${'''{\"viewName\": \"%s\", \"power\": \"%s\", \"last_run\": \"%s\"}''' %(machine_id,power,tz)}"
             - content_type: application/json
         navigate:
           - SUCCESS: SUCCESS
-          - FAILURE: on_failure
+          - FAILURE: SUCCESS
   results:
     - FAILURE
     - SUCCESS
@@ -59,20 +59,23 @@ extensions:
   graph:
     steps:
       opcmsg:
-        x: 43
-        'y': 110
+        x: 100
+        'y': 150
       get_machine_current_data:
-        x: 175
-        'y': 112
+        x: 400
+        'y': 150
       send_machine_status_to_bvd:
-        x: 326
-        'y': 114
+        x: 700
+        'y': 150
         navigate:
-          605992c6-c9f1-4b29-d732-730d29f7a5fb:
-            targetId: 465b2af9-9261-620a-f758-b93238f4bf07
+          b8c03ad8-69a3-50c9-99dc-2c73452a5dde:
+            targetId: d326f20e-fd5d-e4a4-0624-7e9a6ade7c2e
             port: SUCCESS
+          0f6908e7-613a-7118-0d23-a9db7d9a8609:
+            targetId: d326f20e-fd5d-e4a4-0624-7e9a6ade7c2e
+            port: FAILURE
     results:
       SUCCESS:
-        465b2af9-9261-620a-f758-b93238f4bf07:
-          x: 477
-          'y': 115
+        d326f20e-fd5d-e4a4-0624-7e9a6ade7c2e:
+          x: 1000
+          'y': 150
