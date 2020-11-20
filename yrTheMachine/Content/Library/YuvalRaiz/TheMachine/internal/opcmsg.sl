@@ -15,7 +15,7 @@ flow:
     - opcmsg:
         do:
           io.cloudslang.base.cmd.run_command:
-            - command: "${'''%s msg_grp=TheMachine a=%s o=%s msg_t=\"%s\" sev=%s node=%s -option CIH=%s -option ETI=%s''' % (get_sp('YuvalRaiz.TheMachine.opcmsg'),ci,machine_id,msg,sev,node,ci,eti)}"
+            - command: "${'''%s msg_grp=TheMachine a=%s o=%s msg_t=\"%s\" sev=%s node=%s -option CIH=%s -option ETI=%s''' % (get_sp('YuvalRaiz.TheMachine.opcmsg'),ci.replace(' ','_'),machine_id,msg,sev,node,ci.replace(' ','_'),eti)}"
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure
@@ -26,7 +26,7 @@ extensions:
   graph:
     steps:
       opcmsg:
-        x: 55
+        x: 57
         'y': 117
         navigate:
           c5337619-c661-742c-3922-e9135e210c78:

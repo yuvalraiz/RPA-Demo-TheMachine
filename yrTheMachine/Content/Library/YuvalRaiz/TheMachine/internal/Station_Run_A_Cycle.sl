@@ -29,7 +29,7 @@ flow:
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
             - command: |-
                 ${'''
-                select station_name, station_hostname, max_production_in_cycle, inaccuracy, power, efficiency,outcome_part_id
+                select station_name, station_hostname, max_production_in_cycle, inaccuracy, power, efficiency,outputs_ids
                 from station_current_configuration
                 where machine_id = '%s' and station_id = '%s'; ''' % (machine_id, station_id)}
             - trust_all_roots: 'true'
@@ -41,7 +41,7 @@ flow:
           - inaccuracy: "${return_result.split(',')[3]}"
           - power: "${return_result.split(',')[4]}"
           - efficiency: "${return_result.split(',')[5]}"
-          - outcome_part_id: "${return_result.split(',')[6]}"
+          - outcome_ids: "${return_result.split(',')[6]}"
         navigate:
           - HAS_MORE: get_station_input_status
           - NO_MORE: get_station_input_status
@@ -65,11 +65,12 @@ flow:
                 ''' % (machine_id, station_id)}
             - trust_all_roots: 'true'
             - row_delimiter: ','
+            - max_production_in_cycle: '${max_production_in_cycle}'
         publish:
-          - possible_assembly: "${str(eval('min('+return_result+')')) if ',' in return_result else return_result}"
+          - possible_assembly: "${max_production_in_cycle if return_result == '' else  (str(eval('min('+return_result+')')) if ',' in return_result else return_result)}"
         navigate:
           - SUCCESS: station_actual_work
-          - FAILURE: on_failure
+          - FAILURE: station_actual_work
     - station_actual_work:
         do:
           YuvalRaiz.TheMachine.internal.station_actual_work:
@@ -81,11 +82,11 @@ flow:
             - power: '${power}'
             - max_production_in_cycle: '${max_production_in_cycle}'
             - inaccuracy: '${inaccuracy}'
+            - outputs: '${outcome_ids}'
             - efficiency: '${efficiency}'
             - possible_assembly: '${possible_assembly}'
         publish:
-          - created_items
-          - try_assembly
+          - try_assembly: '${consume_amount}'
           - productivity_level
           - ci
           - node
@@ -94,6 +95,8 @@ flow:
           - sev
           - obj_value_pairs
           - bvd_json
+          - inventory_sql
+          - created_main_items
         navigate:
           - POWER_OFF: opcmsg
           - MISSING_PARTS: opcmsg
@@ -147,9 +150,9 @@ flow:
                 ${'''insert into public.machine_part_inventory (machine_id,part_id,tz,quantity,src)
                 (select machine_id, part_id, '%s', required_quantity * -%s,  station_id
                 from public.station_requirements where machine_id = '%s' and station_id = '%s'
-                union values ('%s','%s', '%s'::TIMESTAMP, %s, '%s')
+                %s
                 )
-                ;''' % (tz, try_assembly, machine_id, station_id, machine_id,station_id, tz, created_items, outcome_part_id)}
+                ;''' % (tz, try_assembly, machine_id, station_id, inventory_sql)}
             - trust_all_roots: 'true'
         navigate:
           - SUCCESS: opcmon
@@ -160,24 +163,12 @@ flow:
 extensions:
   graph:
     steps:
-      get_time:
-        x: 56
-        'y': 214
       get_station_current_data:
         x: 199
         'y': 216
-      get_station_input_status:
-        x: 329
-        'y': 216
-      station_actual_work:
-        x: 477
-        'y': 219
-      opcmsg:
-        x: 649
-        'y': 214
-      opcmon:
-        x: 654
-        'y': 362
+      update_inventory:
+        x: 489
+        'y': 367
       send_station_Cycle_to_bvd:
         x: 760
         'y': 218
@@ -185,9 +176,21 @@ extensions:
           572dedf8-efcc-4a88-23a3-b5b09a842112:
             targetId: 1981ffd0-990c-459c-4b0f-96261d8de8f6
             port: SUCCESS
-      update_inventory:
-        x: 489
-        'y': 367
+      opcmon:
+        x: 654
+        'y': 362
+      get_time:
+        x: 56
+        'y': 214
+      station_actual_work:
+        x: 472
+        'y': 218
+      get_station_input_status:
+        x: 329
+        'y': 216
+      opcmsg:
+        x: 649
+        'y': 214
     results:
       SUCCESS:
         1981ffd0-990c-459c-4b0f-96261d8de8f6:

@@ -17,7 +17,7 @@ flow:
           for: "pair in obj_value_pairs.split(',')"
           do:
             io.cloudslang.base.cmd.run_command:
-              - command: "${'''%s %s -object %s:%s -option node=%s -option CIH=%s''' % (get_sp('YuvalRaiz.TheMachine.opcmon'),pair,machine_id,ci,node,ci)}"
+              - command: "${'''%s %s -object %s:%s -option node=%s -option CIH=%s''' % (get_sp('YuvalRaiz.TheMachine.opcmon'),pair,machine_id,ci.replace(' ','_'),node,ci.replace(' ','_'))}"
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure

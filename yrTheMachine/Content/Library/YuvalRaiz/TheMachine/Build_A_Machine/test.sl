@@ -5,17 +5,17 @@ flow:
     - Build_A_Machine:
         do:
           YuvalRaiz.TheMachine.Build_A_Machine.Build_A_Machine:
-            - machine_id: Banking
-            - outcome_price: '10'
+            - machine_id: MoneyTransfer
+            - outcome_price: '1'
             - shipment_size: '1'
-            - control_name: banking_control
-            - hostname_patren: banksrv
+            - control_name: MoneyTransfer_Control
+            - hostname_patren: moneytrns
             - host_domain: null
-            - ip_subnet: 10.99.4
-            - stations_names: 'CalcRates|Clac2'
-            - stations_max_production: '1|1'
-            - stations_output: 'new_rate|price'
-            - stations_inputs: 'rates=2|new_rate=1,external_info=1'
+            - ip_subnet: 10.99.9
+            - stations_names: 'cu_gen_transfer|check_digi_sig|check_req|check_fraud|call_cu|trasfer_to_bank'
+            - stations_max_production: '10|10|8|9|3|20'
+            - stations_output: 'cu_request|digi_ok,digi_reject|req_ok,req_reject|fraud_ok,fraud_reject|cu_ok,cu_fraud|paid,reject'
+            - stations_inputs: '|cu_request=1|digi_ok=1|req_ok=1|fraud_reject=1|fraud_ok=1'
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure
@@ -26,7 +26,7 @@ extensions:
   graph:
     steps:
       Build_A_Machine:
-        x: 273
+        x: 274
         'y': 199
         navigate:
           42b9e448-7896-01f8-9216-eb4616cf11ae:

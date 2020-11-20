@@ -2,8 +2,8 @@
 #!!
 #! @input ip_subnet: 10.99.2
 #! @input stations_names: name1|name2....
-#! @input stations_output: outputname1|outputname2....
-#! @input stations_inputs: input1.1=value,input1.2=value|input2.1=value.....
+#! @input stations_output: outputname1[,alertnativeoutput1]|outputname2[,alertnativeoutput2]....
+#! @input stations_inputs: [input1.1=value[,input1.2=value]|input2.1=value.....
 #!!#
 ########################################################################################################################
 namespace: YuvalRaiz.TheMachine.Build_A_Machine
@@ -19,8 +19,8 @@ flow:
     - ip_subnet: 10.99.2
     - stations_names: 'A|B|C'
     - stations_max_production: '8|15|4'
-    - stations_output: 'item1|item2|item3'
-    - stations_inputs: '0=1,a=2|item1=3|item2=1'
+    - stations_output: 'item1|item2,item2b|item3'
+    - stations_inputs: '|item1=3|item2=1,new_one=1'
   workflow:
     - get_time:
         do:
@@ -49,11 +49,9 @@ flow:
           - SUCCESS: update_dns
           - FAILURE: on_failure
     - update_dns:
-        parallel_loop:
-          for: "host_data in hosts_data.split(',')"
-          do:
-            io.cloudslang.base.cmd.run_command:
-              - command: "${'''ssh -i /root/Emerging_Key_pair.pem root@%s /home/centos/manageDNS.sh -A %s''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),host_data)}"
+        do:
+          io.cloudslang.base.cmd.run_command:
+            - command: "${'''ssh -i /root/Emerging_Key_pair.pem root@%s /home/centos/manageDNS.sh -B %s %s %s %s ''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),hostname_patren,num_of_hosts,ip_subnet.split('.')[2],machine_id)}"
         navigate:
           - SUCCESS: create_objects
           - FAILURE: on_failure
@@ -74,8 +72,8 @@ flow:
             - tz: '${tz}'
         publish:
           - sql_commands
-          - hosts_data
           - cmdb_json
+          - num_of_hosts
         navigate:
           - UNEVEN_STATION_DATA: FAILURE
           - SUCCESS: create_machine_in_db

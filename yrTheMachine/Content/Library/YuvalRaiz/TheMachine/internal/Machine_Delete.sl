@@ -2,7 +2,7 @@ namespace: YuvalRaiz.TheMachine.internal
 flow:
   name: Machine_Delete
   inputs:
-    - machine_id: test_machine
+    - machine_id: MoneyTransfer
   workflow:
     - get_all_stations:
         do:
@@ -50,14 +50,16 @@ flow:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure
     - update_dns:
-        parallel_loop:
+        loop:
           for: "full_hostname in all_nodes.split(';')"
           do:
             io.cloudslang.base.cmd.run_command:
-              - command: "${'''ssh -i /root/Emerging_Key_pair.pem root@%s /home/centos/manageDNS.sh -R %s''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),full_hostname.split('.')[0])}"
+              - command: "${'''/usr/bin/ssh -i /root/Emerging_Key_pair.pem root@%s /home/centos/manageDNS.sh -R %s''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),full_hostname.split('.')[0])}"
+          break:
+            - FAILURE
         navigate:
           - SUCCESS: delete_machine_from_db
-          - FAILURE: on_failure
+          - FAILURE: delete_machine_from_db
   results:
     - FAILURE
     - SUCCESS
