@@ -147,7 +147,7 @@ flow:
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
             - command: |-
-                ${'''insert into public.machine_part_inventory (machine_id,part_id,tz,quantity,src)
+                ${'''insert into public.parts_inventory (machine_id,part_id,tz,quantity,src)
                 (select machine_id, part_id, '%s', required_quantity * -%s,  station_id
                 from public.station_requirements where machine_id = '%s' and station_id = '%s'
                 %s
@@ -163,12 +163,24 @@ flow:
 extensions:
   graph:
     steps:
+      get_time:
+        x: 56
+        'y': 214
       get_station_current_data:
         x: 199
         'y': 216
-      update_inventory:
-        x: 489
-        'y': 367
+      get_station_input_status:
+        x: 329
+        'y': 216
+      station_actual_work:
+        x: 472
+        'y': 218
+      opcmsg:
+        x: 649
+        'y': 214
+      opcmon:
+        x: 654
+        'y': 362
       send_station_Cycle_to_bvd:
         x: 760
         'y': 218
@@ -176,21 +188,9 @@ extensions:
           572dedf8-efcc-4a88-23a3-b5b09a842112:
             targetId: 1981ffd0-990c-459c-4b0f-96261d8de8f6
             port: SUCCESS
-      opcmon:
-        x: 654
-        'y': 362
-      get_time:
-        x: 56
-        'y': 214
-      station_actual_work:
-        x: 472
-        'y': 218
-      get_station_input_status:
-        x: 329
-        'y': 216
-      opcmsg:
-        x: 649
-        'y': 214
+      update_inventory:
+        x: 489
+        'y': 367
     results:
       SUCCESS:
         1981ffd0-990c-459c-4b0f-96261d8de8f6:

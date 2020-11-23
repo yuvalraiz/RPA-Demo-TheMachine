@@ -97,7 +97,7 @@ flow:
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
             - command: |-
-                ${'''insert into public.machine_part_inventory (machine_id,part_id,tz,quantity,src)
+                ${'''insert into public.parts_inventory (machine_id,part_id,tz,quantity,src)
                 values ('%s','%s', '%s'::TIMESTAMP, -%s, 'shipment');''' % (machine_id,part_id, tz, total_items_shipped)}
             - trust_all_roots: 'true'
         navigate:
@@ -156,11 +156,11 @@ extensions:
   graph:
     steps:
       update_inventory:
-        x: 637
-        'y': 97
+        x: 641
+        'y': 85
       can_send_shipmment:
-        x: 307
-        'y': 95
+        x: 318
+        'y': 85
         navigate:
           8afa5036-1162-0e6f-d9da-7b8e30d5fdc5:
             targetId: c5bac99e-9fb5-49ca-5426-9ba0e4a9bb68
@@ -173,8 +173,8 @@ extensions:
             targetId: c5bac99e-9fb5-49ca-5426-9ba0e4a9bb68
             port: SUCCESS
       get_outcome_report:
-        x: 949
-        'y': 90
+        x: 948
+        'y': 86
       send_machine_sales_outcome:
         x: 952
         'y': 325
@@ -185,11 +185,11 @@ extensions:
         x: 19
         'y': 76
       update_outcome:
-        x: 790
-        'y': 102
+        x: 792
+        'y': 87
       calc_number_of_shipments:
-        x: 504
-        'y': 101
+        x: 501
+        'y': 81
     results:
       SUCCESS:
         c5bac99e-9fb5-49ca-5426-9ba0e4a9bb68:

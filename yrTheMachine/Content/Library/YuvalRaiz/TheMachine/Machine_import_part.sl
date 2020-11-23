@@ -35,7 +35,7 @@ flow:
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
             - command: |-
-                ${'''insert into public.machine_part_inventory (machine_id,part_id,tz,quantity,src)
+                ${'''insert into public.parts_inventory (machine_id,part_id,tz,quantity,src)
                 values ('%s','%s', '%s'::TIMESTAMP, %s, 'shipment');''' % (machine_id,part_id, tz, quantity)}
             - trust_all_roots: 'true'
         navigate:
@@ -50,9 +50,6 @@ extensions:
       get_time:
         x: 100
         'y': 150
-      update_inventory:
-        x: 400
-        'y': 150
       Machine_update_parts_level:
         x: 700
         'y': 150
@@ -60,6 +57,9 @@ extensions:
           6ec8865f-4247-a2f5-0895-73b6df91bf8a:
             targetId: 0c7b95cc-6530-e6e6-6085-581d24c77473
             port: SUCCESS
+      update_inventory:
+        x: 400
+        'y': 150
     results:
       SUCCESS:
         0c7b95cc-6530-e6e6-6085-581d24c77473:

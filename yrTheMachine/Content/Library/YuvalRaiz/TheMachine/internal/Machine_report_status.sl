@@ -32,7 +32,7 @@ flow:
                 sensitive: true
             - database_name: "${get_sp('YuvalRaiz.TheMachine.db_name')}"
             - db_url: "${'''jdbc:postgresql://%s:5432/%s''' % (db_server_name,database_name)}"
-            - command: "${'''select max(tz) from public.machine_part_inventory where machine_id = '%s';''' % (machine_id)}"
+            - command: "${'''select max(tz) from public.parts_inventory where machine_id = '%s';''' % (machine_id)}"
             - trust_all_roots: 'true'
             - key: machine_id
         publish:
