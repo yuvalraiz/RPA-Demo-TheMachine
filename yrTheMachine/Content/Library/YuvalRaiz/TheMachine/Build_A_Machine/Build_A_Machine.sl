@@ -10,17 +10,17 @@ namespace: YuvalRaiz.TheMachine.Build_A_Machine
 flow:
   name: Build_A_Machine
   inputs:
-    - machine_id: test_machine
-    - outcome_price: '1'
-    - shipment_size: '2'
-    - control_name: test_machine_control
-    - hostname_patren: testmachine
+    - machine_id: ProductionLine
+    - outcome_price: '165'
+    - shipment_size: '40'
+    - control_name: prod_line_control
+    - hostname_patren: prodstation
     - host_domain: demo.mfdemos.com
     - ip_subnet: 10.99.2
-    - stations_names: 'A|B|C'
-    - stations_max_production: '8|15|4'
-    - stations_output: 'item1|item2,item2b|item3'
-    - stations_inputs: '|item1=3|item2=1,new_one=1'
+    - stations_names: 'station1|station2|station3'
+    - stations_max_production: '100|100|60'
+    - stations_output: 'item1|item2|item3'
+    - stations_inputs: 'item0=1|item1=1|item2=2'
   workflow:
     - get_time:
         do:
@@ -30,7 +30,7 @@ flow:
           - tz: '${output}'
         navigate:
           - SUCCESS: generate_build_content
-          - FAILURE: on_failure
+          - FAILURE: create_machine_in_db
     - create_machine_in_db:
         do:
           io.cloudslang.base.database.sql_command:
@@ -51,7 +51,7 @@ flow:
     - update_dns:
         do:
           io.cloudslang.base.cmd.run_command:
-            - command: "${'''ssh -i /root/Emerging_Key_pair.pem root@%s /home/centos/manageDNS.sh -B %s %s %s %s ''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),hostname_patren,num_of_hosts,ip_subnet.split('.')[2],machine_id)}"
+            - command: "${'''ssh -i /root/Emerging_Key_pair.pem root@%s /mfdemos_scripts/manage_dns.py --bulk %s %s %s %s ''' % (get_sp('YuvalRaiz.TheMachine.dns_server'),hostname_patren,num_of_hosts,ip_subnet.split('.')[2],machine_id)}"
         navigate:
           - SUCCESS: create_objects
           - FAILURE: on_failure
@@ -76,7 +76,7 @@ flow:
           - num_of_hosts
         navigate:
           - UNEVEN_STATION_DATA: FAILURE
-          - SUCCESS: create_machine_in_db
+          - SUCCESS: create_objects
     - create_objects:
         do:
           YuvalRaiz.UCMDB.create_objects:

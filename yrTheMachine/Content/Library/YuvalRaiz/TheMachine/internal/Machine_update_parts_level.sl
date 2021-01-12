@@ -32,7 +32,7 @@ flow:
         publish:
           - all_data: '${return_result}'
         navigate:
-          - SUCCESS: opcmon
+          - SUCCESS: build_inventory_msg_to_bvd
           - FAILURE: on_failure
     - opcmon:
         parallel_loop:
@@ -59,6 +59,26 @@ flow:
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: SUCCESS
+    - build_inventory_msg_to_bvd:
+        do:
+          YuvalRaiz.TheMachine.internal.build_inventory_msg_to_bvd:
+            - machine_id: '${machine_id}'
+            - inventory_data: '${all_data}'
+        publish:
+          - bvd_body
+        navigate:
+          - SUCCESS: send_inventory_to_bvd
+    - send_inventory_to_bvd:
+        do:
+          io.cloudslang.base.http.http_client_post:
+            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/machine_part_level/dims/viewName,ciName''' % (bvd_url,bvd_api_key)}"
+            - trust_all_roots: 'true'
+            - request_character_set: utf-8
+            - body: '${bvd_body}'
+            - content_type: application/json
+        navigate:
+          - SUCCESS: opcmon
+          - FAILURE: on_failure
   results:
     - FAILURE
     - SUCCESS
@@ -84,6 +104,12 @@ extensions:
           5c3d4ae9-3768-553d-d20e-cfe2d92deb28:
             targetId: 9a2a8601-81d7-a355-d9ec-8405c5d0c786
             port: FAILURE
+      build_inventory_msg_to_bvd:
+        x: 250
+        'y': 292
+      send_inventory_to_bvd:
+        x: 388
+        'y': 294
     results:
       SUCCESS:
         9a2a8601-81d7-a355-d9ec-8405c5d0c786:
