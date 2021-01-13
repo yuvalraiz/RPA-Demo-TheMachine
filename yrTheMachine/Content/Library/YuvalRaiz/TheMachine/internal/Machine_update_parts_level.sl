@@ -71,7 +71,7 @@ flow:
     - send_inventory_to_bvd:
         do:
           io.cloudslang.base.http.http_client_post:
-            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/machine_part_level/dims/viewName,ciName''' % (bvd_url,bvd_api_key)}"
+            - url: "${'''%s/bvd-receiver/api/submit/%s/tags/machine_part_level/dims/viewName''' % (bvd_url,bvd_api_key)}"
             - trust_all_roots: 'true'
             - request_character_set: utf-8
             - body: '${bvd_body}'
